@@ -805,6 +805,10 @@
         </profile>
         <profile>
             <id>qulice</id>
+            <properties>
+                <ssh.host>b3.rultor.com</ssh.host>
+                <ssh.user>rultor</ssh.user>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
