@@ -20,3 +20,4 @@ Rultor-HNUser: ${hn.user}
 Rultor-HNPassword: ${hn.password}
 Rultor-SSHHost: ${ssh.host}
 Rultor-SSHUser: ${ssh.user}
+Rultor-Homeurl: ${rultor.homeurl}
