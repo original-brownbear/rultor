@@ -148,8 +148,8 @@ public final class Agents {
                 new DockerExec(
                     new SSH(
                         // @checkstyle MagicNumber (1 line)
-                        "b3.rultor.com", 22,
-                        "rultor",
+                        Manifests.read("Rultor-SSHHost"), 22,
+                        Manifests.read("Rultor-SSHUser"),
                         IOUtils.toString(
                             this.getClass().getResourceAsStream("rultor.key"),
                             CharEncoding.UTF_8
@@ -232,8 +232,8 @@ public final class Agents {
             new RegistersShell(
                 profile,
                 // @checkstyle MagicNumber (1 line)
-                "b3.rultor.com", 22,
-                "rultor",
+                Manifests.read("Rultor-SSHHost"), 22,
+                Manifests.read("Rultor-SSHUser"),
                 IOUtils.toString(
                     this.getClass().getResourceAsStream("rultor.key"),
                     CharEncoding.UTF_8
