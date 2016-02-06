@@ -30,6 +30,7 @@
 package com.rultor.agents.daemons;
 
 import com.jcabi.aspects.Immutable;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import java.net.URI;
 import lombok.EqualsAndHashCode;
@@ -82,7 +83,7 @@ public final class Home {
     public URI uri() {
         return URI.create(
             String.format(
-                "http://www.rultor.com/t/%d-%s",
+                Manifests.read("Rultor-Homeurl") + "/t/%d-%s",
                 Long.parseLong(this.xml.xpath("/talk/@number").get(0)),
                 this.hash
             )
