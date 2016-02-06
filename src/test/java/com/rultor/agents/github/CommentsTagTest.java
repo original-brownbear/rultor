@@ -34,6 +34,7 @@ import com.jcabi.github.Release;
 import com.jcabi.github.Releases;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.manifests.Manifests;
 import com.rultor.spi.Agent;
 import com.rultor.spi.Talk;
 import java.io.IOException;
@@ -111,7 +112,7 @@ public final class CommentsTagTest {
             Matchers.allOf(
                 Matchers.containsString("Released by Rultor"),
                 Matchers.containsString(
-                    "see [build log](http://www.rultor.com/t/1-abcdef)"
+                    "see [build log](" + Manifests.read("Rultor-Homeurl") + "/t/1-abcdef)"
                 )
             )
         );
