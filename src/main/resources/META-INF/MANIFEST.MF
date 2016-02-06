@@ -18,3 +18,5 @@ Rultor-TwitterToken: ${twitter.token}
 Rultor-TwitterTokenSecret: ${twitter.tsecret}
 Rultor-HNUser: ${hn.user}
 Rultor-HNPassword: ${hn.password}
+Rultor-SSHHost: ${ssh.host}
+Rultor-SSHUser: ${ssh.user}
