@@ -81,15 +81,24 @@ public final class QnReferredToTest {
      */
     @Test
     public void recognizeCommaAsDelimiter() throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
-        final Issue issue = repo.issues().create("", "");
         final String login = "xx";
-        issue.comments().post(String.format("hello @%s, deploy", login));
         MatcherAssert.assertThat(
-            new QnReferredTo(login, new QnDeploy()).understand(
-                new Comment.Smart(issue.comments().get(1)), new URI("#")
-            ),
+            reqFromComment(String.format("hello @%s, deploy", login), login),
             Matchers.is(Req.DONE)
+        );
+    }
+
+    /**
+     * QnReferredTo does not recognize mention when username is directly
+     * followed by non-boundary char.
+     * @throws Exception In case of error.
+     */
+    @Test
+    public void notRecognizeWithSuffix() throws Exception {
+        final String login = "xx";
+        MatcherAssert.assertThat(
+            reqFromComment(String.format("hello @%sx deploy", login), login),
+            Matchers.is(Req.EMPTY)
         );
     }
 
@@ -119,6 +128,24 @@ public final class QnReferredToTest {
                     login
                 )
             )
+        );
+    }
+
+    /**
+     *
+     * @param comment Comment to be posted
+     * @param login Rultor user login
+     * @return Req
+     * @throws Exception
+     */
+    private Req reqFromComment(final String comment, final String login)
+        throws Exception {
+        final Repo repo = new MkGithub().randomRepo();
+        final Issue issue = repo.issues().create("", "");
+        issue.comments().post(comment);
+
+        return new QnReferredTo(login, new QnDeploy()).understand(
+            new Comment.Smart(issue.comments().get(1)), new URI("#")
         );
     }
 }
