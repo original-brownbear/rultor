@@ -112,7 +112,10 @@ public final class CommentsTagTest {
             Matchers.allOf(
                 Matchers.containsString("Released by Rultor"),
                 Matchers.containsString(
-                    "see [build log](" + Manifests.read("Rultor-Homeurl") + "/t/1-abcdef)"
+                    String.format(
+                        "see [build log](%s/t/1-abcdef)",
+                        Manifests.read("Rultor-Homeurl")
+                    )
                 )
             )
         );
