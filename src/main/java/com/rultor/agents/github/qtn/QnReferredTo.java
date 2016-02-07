@@ -38,6 +38,8 @@ import com.rultor.agents.github.Req;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -82,11 +84,22 @@ public final class QnReferredTo implements Question {
     @Override
     public Req understand(final Comment.Smart comment,
         final URI home) throws IOException {
-        final String prefix = String.format("@%s ", this.login);
+        final String prefix = String.format("@%s", this.login);
+        final Matcher matcher = Pattern.compile(String.format(".*\\b?(%s\\b).*", prefix)).matcher(comment.body().trim());
+        if (!matcher.matches()) {
+            Logger.info(
+                this,
+                "comment #%d in %s#%d is not for me (no \"%s\" prefix)",
+                comment.number(), comment.issue().repo().coordinates(),
+                comment.issue().number(), prefix
+            );
+
+            return Req.EMPTY;
+        }
         final Req req;
-        if (comment.body().trim().startsWith(prefix)) {
+        if (matcher.start(1) == 0) {
             req = this.origin.understand(comment, home);
-        } else if (comment.body().contains(prefix)) {
+        } else {
             new Answer(comment).post(
                 true,
                 String.format(
@@ -96,16 +109,7 @@ public final class QnReferredTo implements Question {
             );
             Logger.info(this, "mention found in #%d", comment.issue().number());
             req = Req.DONE;
-        } else {
-            Logger.info(
-                this,
-                "comment #%d in %s#%d is not for me (no \"%s\" prefix)",
-                comment.number(), comment.issue().repo().coordinates(),
-                comment.issue().number(), prefix
-            );
-            req = Req.EMPTY;
         }
         return req;
     }
-
 }

@@ -33,6 +33,7 @@ import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.immutable.Array;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.rultor.agents.github.Req;
 import java.net.URI;
@@ -60,19 +61,22 @@ public final class QnReferredToTest {
      */
     @Test
     public void buildsRequest() throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
-        final Issue issue = repo.issues().create("", "");
-        issue.comments().post("  @xx deploy");
-        MatcherAssert.assertThat(
-            new Xembler(
-                new Directives().add("request").append(
-                    new QnReferredTo("xx", new QnDeploy()).understand(
-                        new Comment.Smart(issue.comments().get(1)), new URI("#")
-                    ).dirs()
-                )
-            ).xml(),
-            XhtmlMatchers.hasXPath("/request/type")
-        );
+        final String login = "xx";
+        for (String delimiter : new Array<>(" ", ", ")) {
+            final Repo repo = new MkGithub().randomRepo();
+            final Issue issue = repo.issues().create("", "");
+            issue.comments().post("  @" + login + delimiter + "deploy");
+            MatcherAssert.assertThat(
+                new Xembler(
+                    new Directives().add("request").append(
+                        new QnReferredTo(login, new QnDeploy()).understand(
+                            new Comment.Smart(issue.comments().get(1)), new URI("#")
+                        ).dirs()
+                    )
+                ).xml(),
+                XhtmlMatchers.hasXPath("/request/type")
+            );
+        }
     }
 
     /**
