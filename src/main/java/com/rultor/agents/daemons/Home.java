@@ -83,7 +83,8 @@ public final class Home {
     public URI uri() {
         return URI.create(
             String.format(
-                Manifests.read("Rultor-Homeurl") + "/t/%d-%s",
+                "%s/t/%d-%s",
+                Manifests.read("Rultor-Homeurl"),
                 Long.parseLong(this.xml.xpath("/talk/@number").get(0)),
                 this.hash
             )

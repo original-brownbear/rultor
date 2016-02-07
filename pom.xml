@@ -808,6 +808,7 @@
             <properties>
                 <ssh.host>b3.rultor.com</ssh.host>
                 <ssh.user>rultor</ssh.user>
+                <rultor.homeurl>http://rultor.com</rultor.homeurl>
             </properties>
             <build>
                 <plugins>
