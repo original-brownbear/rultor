@@ -157,7 +157,7 @@ public final class QnAskedBy implements Question {
      * @throws IOException If fails
      */
     private Collection<String> commanders(final Repo repo) throws IOException {
-        final Collection<String> logins = new LinkedList<String>();
+        final Collection<String> logins = new LinkedList<>();
         final XML xml = this.profile.read();
         logins.addAll(new Crew(repo).names());
         logins.addAll(xml.xpath(this.xpath));
