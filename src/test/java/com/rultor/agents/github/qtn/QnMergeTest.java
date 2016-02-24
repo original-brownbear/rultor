@@ -46,8 +46,6 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 1.6
- * @checkstyle MultipleStringLiteralsCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class QnMergeTest {
 
