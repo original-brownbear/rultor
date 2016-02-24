@@ -33,6 +33,7 @@ import com.jcabi.aspects.Immutable;
 import com.jcabi.github.Repo;
 import com.jcabi.github.User;
 import com.jcabi.log.Logger;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import lombok.EqualsAndHashCode;
@@ -67,15 +68,13 @@ final class Crew {
      * Get all collaborators.
      * @return List of their login names
      */
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public Collection<String> names() {
         final Collection<String> names = new LinkedList<>();
         try {
             for (final User user : this.repo.collaborators().iterate()) {
                 names.add(user.login());
             }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Throwable ex) {
+        } catch (final IOException ex) {
             Logger.warn(
                 this, "failed to fetch collaborator: %s",
                 ex.getLocalizedMessage()
