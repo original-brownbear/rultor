@@ -27,33 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.rultor.agents.ec2;
-
-import com.amazonaws.services.ec2.model.Instance;
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
 
 /**
- * Amazon EC2 abstraction.
+ * Amazon EC2.
  *
  * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
- * @since 2.0
- * @todo #629 Add implementation for com.rultor.agents.ec2.Amazon.
- *  It must create com.amazonaws.services.ec2.AmazonEC2 client
- *  with config params "credentials", "zone", "type", "key". Use
- *  client.runInstances(com.amazonaws.services.ec2.model.RunInstancesRequest)
- *  to run on-demand instance. Method runOnDemand must finally
- *  wait for started instance and check if start was successful.
+ * @since 1.0
  */
-@Immutable
-public interface Amazon {
-
-    /**
-     * Run EC2 OnDemand instance.
-     * @return EC2 Instance
-     * @throws IOException if fails
-     */
-    Instance runOnDemand() throws IOException;
-
-}
+package com.rultor.agents.ecs;

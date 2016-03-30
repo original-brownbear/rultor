@@ -312,7 +312,7 @@
     <xs:complexType name="ec2">
         <xs:annotation>
             <xs:documentation source="description">
-                This type describes the specification about the EC2.
+                This type describes the specification about the Ecs.
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="id" type="xs:string" use="required"/>

@@ -27,12 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.rultor.agents.ecs;
+
+import com.amazonaws.services.ecs.model.Container;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.rultor.spi.Agent;
+import com.rultor.spi.Talk;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.xembly.Directives;
 
 /**
- * Amazon interaction tests.
- *
+ * Tests for ${@link StartsEcsContainer}.
  * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
- * @since 2.0
+ * @since 1.0
  */
-package com.rultor.agents.ec2;
+public final class StartsEcsContainerTest {
+
+    /**
+     * StartsEcsContainer can start On-Demand Instance.
+     * @throws Exception In case of error.
+     */
+    @Test
+    public void startsOnDemandInstance() throws Exception {
+        final Container instance = Mockito.mock(Container.class);
+        Mockito.doReturn("1").when(instance).getContainerArn();
+        final Amazon amazon = Mockito.mock(Amazon.class);
+        Mockito.doReturn(instance).when(amazon).runOnDemand();
+        final Agent agent = new StartsEcsContainer(amazon);
+        final Talk talk = new Talk.InFile();
+        talk.modify(
+            new Directives().xpath("/talk")
+                .add("daemon").attr("id", "abcd")
+                .add("title").set("something").up()
+                .add("script").set("test")
+        );
+        agent.execute(talk);
+        MatcherAssert.assertThat(
+            talk.read(),
+            XhtmlMatchers.hasXPaths(
+                "/talk/ec2[@id='1']"
+            )
+        );
+    }
+}

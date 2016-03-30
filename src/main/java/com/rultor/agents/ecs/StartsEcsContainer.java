@@ -27,9 +27,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.rultor.agents.ec2;
+package com.rultor.agents.ecs;
 
-import com.amazonaws.services.ec2.model.Instance;
+import com.amazonaws.services.ecs.model.Container;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
@@ -41,27 +41,33 @@ import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
- * Starts Amazon EC2 instance.
+ * Starts Amazon Ecs instance.
  * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
  * @since 2.0
- * @todo #629 Implement com.rultor.agents.ec2.StopsEC2 agent. It must
- *  stopped EC2 on-demand instance if it was started at StartsEC2 agent.
- *  StopsEC2 must use instance id from /talk/ec2/[@id] to stop it.
- * @todo #629 RegistersShell must register SSH params "host", "port",
- *  "login", "key" for ec2 on-demand instance, if this one was successfully
+ * @todo #1066 Implement com.rultor.agents.ecs.StopsEcs agent. It must
+ *  stop Ecs on-demand containers if it was started at StartsEcsContainer agent.
+ *  StopsEcs must use instance id from /talk/ecs/[@id] to stop it.
+ * @todo #1066 RegistersShell must register SSH params "host", "port",
+ *  "login", "key" for ecs on-demand instance, if this one was successfully
  *  started. Successfully start means that these parameters exist in
- *  /talk/ec2
- * @todo #629 Add new instance creation classes for StartsEC2 and StopsEC2
- *  to com.rultor.agents.Agents. StartsEC2 must be invoked before
- *  RegistersShell agent. StopsEC2 must be invoked after RemovesShell agent.
- * @todo #629 Write documentation for configuring ec2 via .rultor.yml at
- *  2014-07-13-reference.md
+ *  /talk/ecs
+ * @todo #1066 Add new instance creation classes for StartsEcsContainer and
+ *  StopsEcs to com.rultor.agents.Agents.StartsEcsContainer must be invoked
+ *  before RegistersShell agent. StopsEcs must be invoked after RemovesShell
+ *  agent. Ecs containers need to be started in privileged mode to allow a
+ *  Docker daemon to work inside of them.
+ * @todo #1066 Create a base Ecs Image that provides SSHD and Docker for
+ *  StartsEcsContainer.
+ *  This image needs to provide sshd, git, a docker daemon and the sudo command.
+ *  Docker must work with and without sudo, so must git. The image must create
+ *  a keypair on boot, that is then downloaded an used by StartsEcsContainer
+ *  and subsequently RegistersShell to shell into the Ecs container.
  */
 @Immutable
 @ToString
 @EqualsAndHashCode(callSuper = false, of = { "amazon" })
-public final class StartsEC2 extends AbstractAgent {
+public final class StartsEcsContainer extends AbstractAgent {
     /**
      * AmazonEC2 client provider.
      */
@@ -71,7 +77,7 @@ public final class StartsEC2 extends AbstractAgent {
      * Ctor.
      * @param amaz Amazon
      */
-    public StartsEC2(final Amazon amaz) {
+    public StartsEcsContainer(final Amazon amaz) {
         super("/talk[daemon and not(shell)]");
         this.amazon = amaz;
     }
@@ -79,7 +85,7 @@ public final class StartsEC2 extends AbstractAgent {
     @Override
     //@todo #629 Add Instance params to Directive, for example publicIpAddress
     public Iterable<Directive> process(final XML xml) throws IOException {
-        final Instance instance = this.amazon.runOnDemand();
+        final Container instance = this.amazon.runOnDemand();
         Logger.info(
             this,
             "EC2 instance %s created",
@@ -87,6 +93,6 @@ public final class StartsEC2 extends AbstractAgent {
         );
         return new Directives().xpath("/talk")
             .add("ec2")
-            .attr("id", instance.getInstanceId());
+            .attr("id", instance.getContainerArn());
     }
 }
